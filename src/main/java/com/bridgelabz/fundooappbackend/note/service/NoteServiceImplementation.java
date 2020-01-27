@@ -1,15 +1,12 @@
 package com.bridgelabz.fundooappbackend.note.service;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
 import com.bridgelabz.fundooappbackend.elastic.service.ElasticService;
 import com.bridgelabz.fundooappbackend.note.dto.NoteDto;
 import com.bridgelabz.fundooappbackend.note.message.Messages;
@@ -52,11 +49,11 @@ public class NoteServiceImplementation implements NoteService {
 	@Autowired
 	private ElasticService elasticService;
 
-	/**
-	 * @return Function to add a New Note
-	 * @throws Exception 
-	 *
-	 *************************************************************************************************/
+/**
+ * @return Function to add a New Note
+ * @throws Exception 
+ *
+ *************************************************************************************************/
 	public Response addNewNote(NoteDto noteDto, String token) throws Exception {
 
 		if (noteDto.getTitle().isEmpty() || noteDto.getDescription().isEmpty()
@@ -84,11 +81,11 @@ public class NoteServiceImplementation implements NoteService {
 				environment.getProperty("status.success.notecreated"), environment.getProperty("success.status"));
 	}
 
-	/**
-	 * @return Function to Update a note
-	 * @throws Exception 
-	 *
-	 *************************************************************************************************/
+/**
+ * @return Function to Update a note
+ * @throws Exception 
+ *
+ *************************************************************************************************/
 	public Response updateNote(@Valid int id, NoteDto updateNoteDto, String token) throws Exception {
 
 		if (updateNoteDto.getTitle().isEmpty() || updateNoteDto.getDescription().isEmpty()
@@ -127,11 +124,11 @@ public class NoteServiceImplementation implements NoteService {
 				environment.getProperty("status.success.noteupdated"), environment.getProperty("success.status"));
 	}
 
-	/**
-	 * @return Function to Delete a note
-	 * @throws Exception 
-	 *
-	 *************************************************************************************************/
+/**
+ * @return Function to Delete a note
+ * @throws Exception 
+ *
+ *************************************************************************************************/
 	public Response deleteNote(int id, String token) throws Exception {
 
 		String usertoken = tokenUtility.getUserToken(token);
