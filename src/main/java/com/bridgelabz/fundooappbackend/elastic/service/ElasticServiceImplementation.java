@@ -1,10 +1,8 @@
 package com.bridgelabz.fundooappbackend.elastic.service;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -17,25 +15,21 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.suggest.SuggestBuilder;
-import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
-
 import com.bridgelabz.fundooappbackend.note.model.Note;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 /*********************************************************************************************************
- * @author 	:Pramila Mangesh Tawari
- * Purpose	:Elastic Service Implementation to perform fast operations
+ * @author :Pramila Mangesh Tawari Purpose :Elastic Service Implementation to
+ *         perform fast operations
  *
  ***********************************************************************************************************/
+
 @Service
 public class ElasticServiceImplementation implements ElasticService {
 
@@ -52,26 +46,31 @@ public class ElasticServiceImplementation implements ElasticService {
 	static String INDEX = "notedata"; // database
 	static String TYPE = "note"; // table
 
+/**
+ * @return Method to Create A Note in Elastic Search Database
+ *
+ **********************************************************************************************************/
 	public String createNote(Note note) throws Exception {
 
-        System.out.println("in elastic");
-        @SuppressWarnings("unchecked")
+		System.out.println("in elastic");
+
 		Map<String, Object> documentMapper = objectMapper.convertValue(note, Map.class);
 
-        IndexRequest indexRequest = new IndexRequest(INDEX, TYPE,
-        				String.valueOf(note.getId()))
-        .source(documentMapper); //.index(INDEX).type(TYPE);
+		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getId())).source(documentMapper); // .index(INDEX).type(TYPE);
 
-        System.out.println("****"+indexRequest);
-        System.out.println("after request");
-        IndexResponse indexResponse = client.index(indexRequest,
-        					RequestOptions.DEFAULT);
+		System.out.println("****" + indexRequest);
+		System.out.println("after request");
+		IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
 
-        System.out.println("****"+indexResponse);
-        System.out.println("note is :"+indexResponse.getResult().name());
-        return indexResponse.getResult().name();
+		System.out.println("****" + indexResponse);
+		System.out.println("note is :" + indexResponse.getResult().name());
+		return indexResponse.getResult().name();
 	}
-	
+
+/**
+ * @return Method to Search a Note By Id Using Elastic Search
+ *
+ ********************************************************************************************************/
 	public Note searchById(String noteId) throws Exception {
 
 		GetRequest getRequest = new GetRequest(INDEX, TYPE, noteId);
@@ -83,6 +82,10 @@ public class ElasticServiceImplementation implements ElasticService {
 
 	}
 
+/**
+ * @return Method to Update a note In Elastic Search
+ *
+ ********************************************************************************************************/
 	public String updateNote(Note note) throws Exception {
 
 		Note resultDocument = searchById(String.valueOf(note.getId()));
@@ -96,18 +99,26 @@ public class ElasticServiceImplementation implements ElasticService {
 
 		return updateResponse.getResult().name();
 	}
-	
+
+/**
+ * @return Method to Delete a note In Elastic Search
+ *
+ ********************************************************************************************************/
 	public String deleteNote(Note noteId) throws Exception {
 
 		System.out.println("delete elastic");
-		
+
 		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, String.valueOf(noteId));// .index(INDEX).type(TYPE);
-		
+
 		DeleteResponse response = client.delete(deleteRequest, RequestOptions.DEFAULT);
 
 		return response.getResult().name();
 	}
 
+/**
+ * @author Method to get Result of Search
+ *
+ ********************************************************************************************************/
 	private List<Note> getSearchResult(SearchResponse response) {
 
 		SearchHit[] searchHit = response.getHits().getHits();
@@ -119,10 +130,13 @@ public class ElasticServiceImplementation implements ElasticService {
 			Arrays.stream(searchHit)
 					.forEach(hit -> note.add(objectMapper.convertValue(hit.getSourceAsMap(), Note.class)));
 		}
-
 		return note;
 	}
 
+/**
+ * @author Method to Search a note by Title
+ *
+ ********************************************************************************************************/
 	public List<Note> searchByTitle(String title) throws Exception {
 
 		SearchRequest searchRequest = new SearchRequest();
@@ -138,10 +152,12 @@ public class ElasticServiceImplementation implements ElasticService {
 		SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
 
 		return getSearchResult(response);
-
 	}
-	
 
+/**
+ * @author Method to Search a note by Word
+ *
+ ********************************************************************************************************/
 	public List<Note> searchByWord(String word) throws Exception {
 
 		SearchRequest searchRequest = new SearchRequest();
@@ -157,7 +173,11 @@ public class ElasticServiceImplementation implements ElasticService {
 
 		return getSearchResult(response);
 	}
-	
+
+/**
+ * @author Method to Delete a Note
+ *
+ ********************************************************************************************************/
 	public String deleteNote(int noteId) throws Exception {
 
 		System.out.println("delete elastic");
@@ -166,26 +186,53 @@ public class ElasticServiceImplementation implements ElasticService {
 
 		return response.getResult().name();
 	}
-	
-	public List<Note> autocomplete(String prefixString) {
-	     SearchRequest searchRequest = new SearchRequest(INDEX);
-	     CompletionSuggestionBuilder suggestBuilder = new CompletionSuggestionBuilder("xsV"); // Note 1
+}
 
-	    /* suggestBuilder.size(size)
-	                   .prefix(prefixString, Fuzziness.ONE) // Note 2
-	                   .skipDuplicates(true)
-	                   .analyzer("standard");*/
-	 
-	     SearchSourceBuilder sourceBuilder = new SearchSourceBuilder(); // _search
-	     sourceBuilder.suggest(new SuggestBuilder().addSuggestion("sAVf", suggestBuilder));
-	     searchRequest.source(sourceBuilder);
 
-	     SearchResponse response;
-	     try {
-	          response = client.search(searchRequest);
-	          return getSearchResult(response); // Note 3
-	     } catch (IOException ex) {
-	          throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error in ES search");
-	     }
-	}
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * public List<Note> autocomplete(String prefixString) { SearchRequest
+ * searchRequest = new SearchRequest(INDEX); CompletionSuggestionBuilder
+ * suggestBuilder = new CompletionSuggestionBuilder("xsV"); // Note 1
+ * 
+ * suggestBuilder.size(size) .prefix(prefixString, Fuzziness.ONE) // Note 2
+ * .skipDuplicates(true) .analyzer("standard");
+ * 
+ * SearchSourceBuilder sourceBuilder = new SearchSourceBuilder(); // _search
+ * sourceBuilder.suggest(new SuggestBuilder().addSuggestion("sAVf",
+ * suggestBuilder)); searchRequest.source(sourceBuilder);
+ * 
+ * SearchResponse response; try { response = client.search(searchRequest);
+ * return getSearchResult(response); // Note 3 } catch (IOException ex) { throw
+ * new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
+ * "Error in ES search"); } }
+ */

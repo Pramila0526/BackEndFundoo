@@ -397,6 +397,18 @@ public class NoteServiceImplementation implements NoteService {
 					environment.getProperty("status.success.distrash"), environment.getProperty("success.status"));
 		}
 	}
+
+@Override
+public Response addNote(Note noteDto) throws Exception {
+	Note note = mapper.map(noteDto, Note.class);
+
+
+	notesRepository.save(note); // Storing Users Data in Database
+	
+	elasticService.createNote(note);
+	
+	return new Response(200,"",Messages.NOTE_CREATED);
+}
 }
 
 /*

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundooappbackend.note.dto.NoteDto;
+import com.bridgelabz.fundooappbackend.note.model.Note;
 import com.bridgelabz.fundooappbackend.note.service.NoteService;
 import com.bridgelabz.fundooappbackend.user.message.Messages;
 import com.bridgelabz.fundooappbackend.user.response.Response;
@@ -28,14 +29,24 @@ public class NoteController
       @Autowired
       NoteService notesServiceImplementation;
 	
-      // Testing API
+      /*public NoteController(NoteService notesServiceImplementation2) {
+		// TODO Auto-generated constructor stub
+	}*/
+
+	// Testing API
       @GetMapping("/demoo")
       public String demo()
       {
     	  return "Hello User!!";
       }
       
-     // Adding New Note
+      @GetMapping("/addnote")
+  	public Response addNote(@RequestBody Note noteDto) throws Exception 
+  	{
+  		return new Response(Messages.OK,"Note Added",notesServiceImplementation.addNote(noteDto));
+  	}
+
+    // Adding New Note
     @PostMapping("/addnewnote")
   	public ResponseEntity<Response> addNewNote(@RequestBody NoteDto noteDto,@RequestHeader String token) throws Exception
   	{

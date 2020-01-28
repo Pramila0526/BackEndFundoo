@@ -15,6 +15,7 @@ import com.bridgelabz.fundooappbackend.user.response.Response;
 @Service
 public interface NoteService {
 	public Response addNewNote(NoteDto noteDto,String token) throws Exception;
+	public Response addNote(Note noteDto) throws Exception;
 	public Response updateNote(@Valid int id,NoteDto updateNoteDto, String token)throws Exception; 
 	public Response deleteNote(int id, String token) throws Exception; 
 //	public Response findNote(int id,String token);

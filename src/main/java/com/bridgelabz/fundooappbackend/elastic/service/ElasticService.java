@@ -17,5 +17,5 @@ public interface ElasticService {
 	public String deleteNote(int noteId) throws Exception; 
 	public List<Note> searchByTitle(String title) throws Exception;
 	public List<Note> searchByWord(String word) throws Exception;
-	public List<Note> autocomplete(String prefixString);
+	//public List<Note> autocomplete(String prefixString);
    }

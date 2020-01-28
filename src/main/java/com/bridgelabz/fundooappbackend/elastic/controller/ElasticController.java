@@ -44,10 +44,17 @@ public class ElasticController {
 	{
 		return new Response(Messages.OK,"Search Notes By Word",elasticService.searchByWord(word));
 	}
-	
-	@GetMapping("/autocomplete/{prefixString}")
-	public Response autoComplete(@PathVariable String prefixString) throws Exception 
-	{
-		return new Response(Messages.OK,"Search Notes By Auto Complete",elasticService.autocomplete(prefixString));
-	}
 }
+
+
+
+
+
+
+
+/*
+ * @GetMapping("/autocomplete/{prefixString}") public Response
+ * autoComplete(@PathVariable String prefixString) throws Exception { return new
+ * Response(Messages.OK,"Search Notes By Auto Complete",elasticService.
+ * autocomplete(prefixString)); }
+ */
