@@ -149,7 +149,7 @@ public class NoteServiceImplementation implements NoteService {
 
 		notesRepository.delete(note);
 		
-		elasticService.deleteNote(note);
+		elasticService.deleteNote(id);
 		
 		return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
 				environment.getProperty("status.success.notedeleted"), environment.getProperty("success.status"));
@@ -185,10 +185,13 @@ public class NoteServiceImplementation implements NoteService {
  *
  *************************************************************************************************/
 	public Response findNote(int id, String token) {
+	
 		String usertoken = tokenUtility.getUserToken(token);
+		
 		if (usertoken.isEmpty()) {
 			throw new TokenException(Messages.INVALID_TOKEN);
 		}
+		
 		User user = repository.findByEmail(usertoken);
 
 		if (user == null) {
@@ -328,10 +331,10 @@ public class NoteServiceImplementation implements NoteService {
 	}
     
 /**
- * @return Function archieve the Notes
+ * @return Function to archive the Notes
  *
  *************************************************************************************************/
- public Response archieve(@Valid int id,String token) {
+ public Response archive(@Valid int id,String token) {
 		
 		String userToken = tokenUtility.getUserToken(token);
 				

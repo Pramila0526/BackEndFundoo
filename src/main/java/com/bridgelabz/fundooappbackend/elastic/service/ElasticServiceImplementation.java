@@ -158,7 +158,7 @@ public class ElasticServiceImplementation implements ElasticService {
 		return getSearchResult(response);
 	}
 	
-	public String deleteNote(Long noteId) throws Exception {
+	public String deleteNote(int noteId) throws Exception {
 
 		System.out.println("delete elastic");
 		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, String.valueOf(noteId));// .index(INDEX).type(TYPE);

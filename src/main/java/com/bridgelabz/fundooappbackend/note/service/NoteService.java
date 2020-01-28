@@ -25,7 +25,7 @@ public interface NoteService {
 	public List<Note> sortByTitle(String token);
 	public List<Note> sortByDate(String token);
 	public Response pinAndUnpin(@Valid int id,String token);
-	public Response archieve(@Valid int id,String token);
+	public Response archive(@Valid int id,String token);
 	public Response trash(@Valid int id,String token);
 
 }
