@@ -19,22 +19,34 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundooappbackend.note.model.Note;
+import com.bridgelabz.fundooappbackend.user.service.UserServiceImplementation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*********************************************************************************************************
- * @author :Pramila Mangesh Tawari Purpose :Elastic Service Implementation to
- *         perform fast operations
+ * @author :Pramila Mangesh Tawari 
+ * Purpose :Elastic Service Implementation to
+ * 	        perform fast operations
  *
  ***********************************************************************************************************/
 
 @Service
 public class ElasticServiceImplementation implements ElasticService {
 
+	static Logger logger = LoggerFactory.getLogger(UserServiceImplementation.class);
+	
+	/** 
+	 * Java RestHighLevelClient works on top of RestLowLevelClient
+	 Its main goal is to expose API specific methods, that accept request object as an argument
+	 and returns response object
+	 * */
 	private RestHighLevelClient client;
 
+	//Object Mapper used to convert our Model Document object to a Map Object
 	private ObjectMapper objectMapper;
 
 	@Autowired
@@ -43,8 +55,8 @@ public class ElasticServiceImplementation implements ElasticService {
 		this.objectMapper = objectMapper;
 	}
 
-	static String INDEX = "notedata"; // database
-	static String TYPE = "note"; // table
+	static String INDEX = "notedata"; // Database Name
+	static String TYPE = "note"; // Table Name
 
 /**
  * @return Method to Create A Note in Elastic Search Database
@@ -54,17 +66,25 @@ public class ElasticServiceImplementation implements ElasticService {
 
 		System.out.println("in elastic");
 
+		// Converts Our Values to json in Key Value Pair Format
 		Map<String, Object> documentMapper = objectMapper.convertValue(note, Map.class);
 
-		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getId())).source(documentMapper); // .index(INDEX).type(TYPE);
+		// It Converts Id into String and Checks The id From that Database and that praticular Table and stores source into index
+		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getId())).source(documentMapper); 
 
-		System.out.println("****" + indexRequest);
-		System.out.println("after request");
+		logger.info("****" + indexRequest);
+
+		logger.info("Index Requested");		
+		
+		// The portion of an HTTP request to Elasticsearch that can be manipulated without changing Elasticsearch's behavior.
 		IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
 
-		System.out.println("****" + indexResponse);
-		System.out.println("note is :" + indexResponse.getResult().name());
-		return indexResponse.getResult().name();
+		logger.info("****" + indexResponse);
+
+		logger.info("note is :" + indexResponse.getResult().name());
+		
+		// The change that occurred to the document.
+	  	return indexResponse.getResult().name();
 	}
 
 /**
@@ -72,14 +92,18 @@ public class ElasticServiceImplementation implements ElasticService {
  *
  ********************************************************************************************************/
 	public Note searchById(String noteId) throws Exception {
-
+		
+		// Requsting to find the data by id from particular database and table
 		GetRequest getRequest = new GetRequest(INDEX, TYPE, noteId);
 
+		// Getting Response from Client
 		GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
+		
+		logger.info("Searching By Id");
+		
 		Map<String, Object> resultMap = getResponse.getSource();
 
 		return objectMapper.convertValue(resultMap, Note.class);
-
 	}
 
 /**
@@ -88,15 +112,25 @@ public class ElasticServiceImplementation implements ElasticService {
  ********************************************************************************************************/
 	public String updateNote(Note note) throws Exception {
 
+		// Stores the Note Object by Id in resultDocument
 		Note resultDocument = searchById(String.valueOf(note.getId()));
+		
+		// Converts Our Values to json in Key Value Pair Format
 		Map<String, Object> documentMapper = objectMapper.convertValue(note, Map.class);
 
+		// It Converts Id into String and Checks The id From that Database and that praticular Table
 		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, String.valueOf(resultDocument.getId()));
 
+		// Converts Java Code into JSON Format
+		// Sets the doc to use for updates when a script is not specified.
 		updateRequest.doc(documentMapper);
 
-		UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
+		// The portion of an HTTP request to Elasticsearch that can be manipulated without changing Elasticsearch's behavior.
+		 UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
 
+		logger.info("Updating By Id");
+
+		// The change that occurred to the document.
 		return updateResponse.getResult().name();
 	}
 
@@ -106,12 +140,15 @@ public class ElasticServiceImplementation implements ElasticService {
  ********************************************************************************************************/
 	public String deleteNote(Note noteId) throws Exception {
 
-		System.out.println("delete elastic");
+		logger.info("delete");
 
+		// Requesting to Delete by id from Praticular Database and Table
 		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, String.valueOf(noteId));// .index(INDEX).type(TYPE);
 
+		// Gives Response accourding to Operation
 		DeleteResponse response = client.delete(deleteRequest, RequestOptions.DEFAULT);
 
+		// The change that occurred to the document.
 		return response.getResult().name();
 	}
 
@@ -122,10 +159,12 @@ public class ElasticServiceImplementation implements ElasticService {
 	private List<Note> getSearchResult(SearchResponse response) {
 
 		SearchHit[] searchHit = response.getHits().getHits();
-
+		
 		List<Note> note = new ArrayList<>();
 
 		if (searchHit.length > 0) {
+
+			logger.info("Search Result");
 
 			Arrays.stream(searchHit)
 					.forEach(hit -> note.add(objectMapper.convertValue(hit.getSourceAsMap(), Note.class)));
@@ -139,36 +178,56 @@ public class ElasticServiceImplementation implements ElasticService {
  ********************************************************************************************************/
 	public List<Note> searchByTitle(String title) throws Exception {
 
+		// Search Request Object
 		SearchRequest searchRequest = new SearchRequest();
+		
+		// A search source builder allowing to easily build search source
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
+		// A Query that matches documents matching boolean combinations of other queries
+		// It checks whther it is present in elastic search Database or not
+		// matchQuery-Creates a match query with type "BOOLEAN" for the provided field name and text.
 		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
 				.must(QueryBuilders.matchQuery("title", "*" + title + "*"));
-
+		
+		logger.info("Search By Title");
+		 
 		searchSourceBuilder.query(queryBuilder);
 
+		// Requesting defined data
 		searchRequest.source(searchSourceBuilder);
 
+		// Gives Search Response according to our request
 		SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
 
 		return getSearchResult(response);
 	}
 
 /**
- * @author Method to Search a note by Word
+ * @author Method to Search a note by any Word
  *
  ********************************************************************************************************/
 	public List<Note> searchByWord(String word) throws Exception {
 
+		// Search Request Object
 		SearchRequest searchRequest = new SearchRequest();
+	
+		// A search source builder allowing to easily build search source
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-		QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("word", "*" + word + "*"));
+		// A Query that matches documents matching boolean combinations of other queries
+		// It checks whther it is present in elastic search Database or not
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+				.must(QueryBuilders.matchQuery("word", "*" + word + "*"));
 
 		searchSourceBuilder.query(queryBuilder);
 
+		// Requesting defined data
 		searchRequest.source(searchSourceBuilder);
+		
+		logger.info("Search By Word");
 
+		// Gives Serach Response according to our request
 		SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
 
 		return getSearchResult(response);
@@ -180,10 +239,15 @@ public class ElasticServiceImplementation implements ElasticService {
  ********************************************************************************************************/
 	public String deleteNote(int noteId) throws Exception {
 
-		System.out.println("delete elastic");
+		logger.info("Delete From Elastic ");
+	
+		// Request to delete bu id from particular database and table
 		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, String.valueOf(noteId));// .index(INDEX).type(TYPE);
+		
+		// Delete Response from client
 		DeleteResponse response = client.delete(deleteRequest, RequestOptions.DEFAULT);
 
+		// The change that occurred to the document.
 		return response.getResult().name();
 	}
 }

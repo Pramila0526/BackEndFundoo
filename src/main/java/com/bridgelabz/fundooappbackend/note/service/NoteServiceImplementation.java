@@ -200,7 +200,6 @@ public class NoteServiceImplementation implements NoteService {
 
 		Note note = notesRepository.findById(id);
 		
-	//	elasticService.findById(id)
 		if (note == null) {
 			throw new NoteNotFoundException(Messages.NOTE_NOT_FOUND);
 		}
@@ -398,17 +397,17 @@ public class NoteServiceImplementation implements NoteService {
 		}
 	}
 
-@Override
-public Response addNote(Note noteDto) throws Exception {
-	Note note = mapper.map(noteDto, Note.class);
+	@Override
+	public Response addNote(Note noteDto) throws Exception {
+		
+		Note note = mapper.map(noteDto, Note.class);
 
+		notesRepository.save(note); // Storing Users Data in Database
 
-	notesRepository.save(note); // Storing Users Data in Database
-	
-	elasticService.createNote(note);
-	
-	return new Response(200,"",Messages.NOTE_CREATED);
-}
+		elasticService.createNote(note);
+
+		return new Response(200, "", Messages.NOTE_CREATED);
+	}
 }
 
 /*

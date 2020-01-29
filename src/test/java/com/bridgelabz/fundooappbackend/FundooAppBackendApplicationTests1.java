@@ -17,7 +17,7 @@ import com.bridgelabz.fundooappbackend.user.response.Response;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-class FundooAppBackendApplicationTests {
+class FundooAppBackendApplicationTests1 {
 
 	/*private MockMvc mockMvc;
 	
