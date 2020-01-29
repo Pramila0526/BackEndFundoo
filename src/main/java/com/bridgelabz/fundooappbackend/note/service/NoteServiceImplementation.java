@@ -146,7 +146,7 @@ public class NoteServiceImplementation implements NoteService {
 		}
 
 	//	note.setUser(user);
-
+       
 		notesRepository.delete(note);
 		
 		elasticService.deleteNote(id);
@@ -397,7 +397,14 @@ public class NoteServiceImplementation implements NoteService {
 		}
 	}
 
-	@Override
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 	public Response addNote(Note noteDto) throws Exception {
 		
 		Note note = mapper.map(noteDto, Note.class);
@@ -411,10 +418,7 @@ public class NoteServiceImplementation implements NoteService {
 }
 
 /*
-*//**
-	 * @return Function to find a note
-	 *
-	 *************************************************************************************************/
+ *
 /*
  * public Response findNote(int id, String token) { String usertoken =
  * tokenUtility.getUserToken(token); if (usertoken.isEmpty()) { throw new

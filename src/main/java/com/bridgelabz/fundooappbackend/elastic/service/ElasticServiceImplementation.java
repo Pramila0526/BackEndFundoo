@@ -41,8 +41,9 @@ public class ElasticServiceImplementation implements ElasticService {
 	
 	/** 
 	 * Java RestHighLevelClient works on top of RestLowLevelClient
-	 Its main goal is to expose API specific methods, that accept request object as an argument
-	 and returns response object
+	 *	Its main goal is to expose API specific methods, that accept request object as an argument
+	 *	and returns response object
+	 *
 	 * */
 	private RestHighLevelClient client;
 
@@ -70,6 +71,7 @@ public class ElasticServiceImplementation implements ElasticService {
 		Map<String, Object> documentMapper = objectMapper.convertValue(note, Map.class);
 
 		// It Converts Id into String and Checks The id From that Database and that praticular Table and stores source into index
+		// Index request to index a typed JSON document into a specific index and make it searchable
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getId())).source(documentMapper); 
 
 		logger.info("****" + indexRequest);
@@ -94,6 +96,7 @@ public class ElasticServiceImplementation implements ElasticService {
 	public Note searchById(String noteId) throws Exception {
 		
 		// Requsting to find the data by id from particular database and table
+		// A request to get a document (its source) from an index based on its type (optional) and id
 		GetRequest getRequest = new GetRequest(INDEX, TYPE, noteId);
 
 		// Getting Response from Client
@@ -143,9 +146,11 @@ public class ElasticServiceImplementation implements ElasticService {
 		logger.info("delete");
 
 		// Requesting to Delete by id from Praticular Database and Table
+		// A request to delete a document from an index based on its type and id
 		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, String.valueOf(noteId));// .index(INDEX).type(TYPE);
 
 		// Gives Response accourding to Operation
+		// The response of the delete action.
 		DeleteResponse response = client.delete(deleteRequest, RequestOptions.DEFAULT);
 
 		// The change that occurred to the document.
@@ -179,6 +184,7 @@ public class ElasticServiceImplementation implements ElasticService {
 	public List<Note> searchByTitle(String title) throws Exception {
 
 		// Search Request Object
+		// A request to execute search against one or more indices
 		SearchRequest searchRequest = new SearchRequest();
 		
 		// A search source builder allowing to easily build search source
@@ -198,6 +204,7 @@ public class ElasticServiceImplementation implements ElasticService {
 		searchRequest.source(searchSourceBuilder);
 
 		// Gives Search Response according to our request
+		// A response of a search request.
 		SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
 
 		return getSearchResult(response);
@@ -210,6 +217,7 @@ public class ElasticServiceImplementation implements ElasticService {
 	public List<Note> searchByWord(String word) throws Exception {
 
 		// Search Request Object
+		// A request to execute search against one or more indices
 		SearchRequest searchRequest = new SearchRequest();
 	
 		// A search source builder allowing to easily build search source
@@ -228,6 +236,7 @@ public class ElasticServiceImplementation implements ElasticService {
 		logger.info("Search By Word");
 
 		// Gives Serach Response according to our request
+		// A response of a search request.
 		SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
 
 		return getSearchResult(response);
@@ -247,31 +256,11 @@ public class ElasticServiceImplementation implements ElasticService {
 		// Delete Response from client
 		DeleteResponse response = client.delete(deleteRequest, RequestOptions.DEFAULT);
 
-		// The change that occurred to the document.
 		return response.getResult().name();
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/********************************************************************************************************/
 
 
 
