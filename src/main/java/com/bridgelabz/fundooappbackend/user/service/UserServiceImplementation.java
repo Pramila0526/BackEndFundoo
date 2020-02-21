@@ -73,16 +73,16 @@ public class UserServiceImplementation implements UserService {
  *         Sender).
  *
  *********************************************************************************************************/
-	public Response Register(RegistrationDto regdto) 
+	public Response register(RegistrationDto regdto) 
 	{
 		User user = mapper.map(regdto, User.class); // Mapping new User data into the user Class
 		
-		System.out.println(user.getFirstname());
+		System.out.println(user.getFirstName());
 		
 		if (repository.findAll().stream().anyMatch(i -> i.getEmail().equals(regdto.getEmail()))) // check user already
 		{
 			logger.info("Registration Completed");
-		throw new RegistrationExcepton(Messages.EMAIL_ALREADY_REGISTERED);
+			throw new RegistrationExcepton(Messages.EMAIL_ALREADY_REGISTERED);
 		}  
 			user.setPassword(passwordEncoder.encode(regdto.getPassword()));
 			System.out.println(user);
@@ -111,12 +111,14 @@ public class UserServiceImplementation implements UserService {
 	public Response validateUser(String token) 
 	{
 		String email = tokenutility.getUserToken(token); // get user id from user token.
+		
 		if (email.isEmpty()) 
 		{
 			throw new TokenException(Messages.INVALID_EMAIL);
 		}
 
 		User user = repository.findByEmail(email);
+		
 		if (user != null)
 		{ // if userid is found validate should be true
 			user.setValidate(true);
@@ -140,6 +142,7 @@ public class UserServiceImplementation implements UserService {
 		if(logindto.getEmail().isEmpty()) {
 			throw new InputNotFoundException(Messages.ENTER_EMAIL);
 		}
+		
 		User user = repository.findByEmail(logindto.getEmail()); // find email present or not
 		System.out.println(user);
 		if (user == null)
@@ -147,11 +150,11 @@ public class UserServiceImplementation implements UserService {
 			logger.info("Null Content");
 			return new Response(Integer.parseInt(environment.getProperty("status.badrequest.code") ),environment.getProperty("status.success.usernotfound"),environment.getProperty("failure.status"));
 		}
+		
 		String token = tokenutility.createToken(user.getEmail());
 
 		if (!user.isValidate()) 
 		{
-
 			new ValidateUserException(Messages.LINK_NOT_ACTIVE);
 		} 
 		else
@@ -160,7 +163,7 @@ public class UserServiceImplementation implements UserService {
 					&& passConfig.encoder().matches(logindto.getPassword(), user.getPassword())) 
 			{ // encode the user
 				logger.info("username password Matched");
-				return new Response(Integer.parseInt(environment.getProperty("status.ok.code") ),environment.getProperty("status.success.login"),token);
+				return new Response(Integer.parseInt(environment.getProperty("status.ok.code") ),environment.getProperty("status.success.login"),token,user);
 			}
 		}
 		return new Response(Integer.parseInt(environment.getProperty("status.badrequest.code") ),environment.getProperty("status.success.loginunsuccess"),environment.getProperty("failure.status"));
@@ -189,7 +192,7 @@ public class UserServiceImplementation implements UserService {
 			logger.info("Token Generated");
 			javaMailSender
 					.send(MessageUtility.verifyUserMail(forgetPasswordDto.getEmail(), token, Messages.VERIFY_MAIL)); // send
-			logger.info("Token Sent");																									// email
+			logger.info("Token Sent " +token);																									// email
 		}
 		return new Response(Integer.parseInt(environment.getProperty("status.ok.code") ),environment.getProperty("status.success.tokensent"),environment.getProperty("success.status"));
 	}
@@ -231,7 +234,7 @@ public class UserServiceImplementation implements UserService {
 		
 		if (email.isEmpty())
 		{
-			logger.info("Email Doesn't Exists");
+//			logger.info("Email Doesn't Exists");
 			throw new TokenException(Messages.INVALID_TOKEN);
 		}
 		

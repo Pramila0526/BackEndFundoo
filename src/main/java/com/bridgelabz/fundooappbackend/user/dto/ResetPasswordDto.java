@@ -1,5 +1,7 @@
 package com.bridgelabz.fundooappbackend.user.dto;
- 
+
+import javax.validation.constraints.NotBlank;
+
 /**********************************************************************************************************
  * @author :Pramila Tawari 
  * Purpose :Confriming the Password
@@ -7,7 +9,11 @@ package com.bridgelabz.fundooappbackend.user.dto;
  *********************************************************************************************************/
 
 public class ResetPasswordDto {
+	
+	@NotBlank
 	private String password;
+	
+	@NotBlank
 	private String confirmpassword;
 	
 	public String getPassword() 

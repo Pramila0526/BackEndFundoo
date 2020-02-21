@@ -18,7 +18,7 @@ import com.bridgelabz.fundooappbackend.user.response.Response;
 
 public interface UserService 
 {
-	public Response Register(RegistrationDto regdto); // To register the new user
+	public Response register(RegistrationDto regdto); // To register the new user
 
 	public Response loginUser(LoginDto logindto); // For User Login
 

@@ -3,6 +3,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.bridgelabz.fundooappbackend.user.response.Response;
  ***********************************************************************************************************/
 @RestController   
 @RequestMapping("/label")
+@CrossOrigin(allowedHeaders = "*" , origins = "*")
 public class LabelController {
 	
 	 @Autowired
@@ -49,7 +51,7 @@ public class LabelController {
 	  	}
 	 
 	 // Deleting Label
-	 @DeleteMapping("/{id}")
+	 @DeleteMapping("deletelabel/{id}")
 	  	public ResponseEntity<Response> deleteLabel(@PathVariable int id,@RequestHeader String token)
 	  	{
 	  		return new ResponseEntity<Response>(labelServiceImplementation.deleteLabel(id, token), HttpStatus.OK); // give response for user 200

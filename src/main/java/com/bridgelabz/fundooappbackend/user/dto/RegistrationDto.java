@@ -1,6 +1,5 @@
 package com.bridgelabz.fundooappbackend.user.dto;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**********************************************************************************************************
@@ -11,21 +10,21 @@ import javax.validation.constraints.Pattern;
 
 public class RegistrationDto 
 {
-	@NotNull
+	@NotBlank(message = "First Name is mandatory")
 	private String firstname;
 	
-	@NotNull(message = "Last Name is mandatory")	
+	@NotBlank(message = "Last Name is mandatory")	
 	private String lastname;
 	
-	@NotNull
+	@NotBlank
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\. [A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message="phone format wrong" )
 	private String email;
 
-	@NotNull(message = "password is mandatory")
+	@NotBlank(message = "password is mandatory")
 	private String password;
 	
-	@NotNull
-	@Pattern(regexp = "(0/91)?[7-9][0-9]{9}", message="phone format wrong" )
+	@NotBlank
+	@Pattern(regexp = "(0/91)?[7-9][0-9]{9}", message="Phone format wrong" )
 	private String phonenumber;
 
 	public RegistrationDto()
@@ -34,10 +33,10 @@ public class RegistrationDto
 	}
 	
 	public RegistrationDto(
-			@NotNull(message = "First Name is mandatory") @Pattern(regexp = "^[a-zA-Z]*$") String firstname,
-			@NotNull(message = "Last Name is mandatory") @Pattern(regexp = "^[a-zA-Z]*$") String lastname,
+			@NotBlank(message = "First Name is mandatory") @Pattern(regexp = "^[a-zA-Z]*$") String firstname,
+			@NotBlank(message = "Last Name is mandatory") @Pattern(regexp = "^[a-zA-Z]*$") String lastname,
 			@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\. [A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "phone format wrong") String email,
-			@NotNull(message = "password is mandatory") String password,
+			@NotBlank(message = "password is mandatory") String password,
 			@Pattern(regexp = "(0/91)?[7-9][0-9]{9}", message = "phone format wrong") @NotBlank(message = "phone is mandatory") String phonenumber) {
 		super();
 		this.firstname = firstname;
@@ -97,8 +96,9 @@ public class RegistrationDto
 		this.phonenumber = phonenumber;
 	}
 
+	@Override
 	public String toString() {
 		return "RegistrationDto [firstname=" + firstname + ", lastname=" + lastname + ", email=" + email + ", password="
 				+ password + ", phonenumber=" + phonenumber + "]";
 	}
-}
+	}

@@ -12,6 +12,7 @@ private static final long serialVersionUID = 1L;
 	private int status;  
 	private String message;
 	private Object data;
+	private Object userData;
 
 	public Response()
 	{
@@ -23,6 +24,27 @@ private static final long serialVersionUID = 1L;
 		this.status = status;
 		this.message = message;
 		this.data = data;
+	}
+	
+	public Response(int status, String message) {
+		super();
+		this.status = status;
+		this.message = message;
+	}
+	
+	public Response(int status, Object data1, Object data) {
+		super();
+		this.status = status;
+		this.data = data1;
+		this.data = data;
+	}
+	
+	public Response(int status,String message, Object data, Object userData) {
+		super();
+		this.status = status;
+		this.message = message;
+		this.data = data;
+		this.userData = userData;
 	}
 
 	public int getStatus() {
@@ -51,6 +73,14 @@ private static final long serialVersionUID = 1L;
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
 	}
 
 	@Override

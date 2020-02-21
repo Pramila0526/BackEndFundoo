@@ -1,8 +1,11 @@
 package com.bridgelabz.fundooappbackend.user.controller;
 import javax.validation.Valid;
+
+//import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +42,7 @@ import com.bridgelabz.fundooappbackend.user.service.UserServiceImplementation;
  */
 @RestController 
 @RequestMapping("/user")
+@CrossOrigin(allowedHeaders = "*" , origins = "*")
 public class UserController 
 {
       @Autowired
@@ -54,7 +58,7 @@ public class UserController
 	@PostMapping("/register")
 	public ResponseEntity<Response> Register(@Valid @RequestBody RegistrationDto regDto)
 	{
-		return new ResponseEntity<Response>(userServiceImp.Register(regDto), HttpStatus.OK); // give response for user 200
+		return new ResponseEntity<Response>(userServiceImp.register(regDto), HttpStatus.OK); // give response for user 200
 	}
 	
 	// API for validating the user into the database. 
@@ -82,10 +86,9 @@ public class UserController
 	
 	// API for setting new Password
 	@PutMapping("/setpassword")
-	public ResponseEntity<Response> setNewPassword(@RequestParam String token,
+	public ResponseEntity<Response> setNewPassword(@RequestHeader String token,
 			@RequestBody ResetPasswordDto setpassworddto) 
 	{
-		System.out.println("in controller");
 		return new ResponseEntity<Response>(userServiceImp.setPassword(setpassworddto, token), HttpStatus.OK);
 	}
 	

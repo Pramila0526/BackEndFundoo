@@ -1,5 +1,6 @@
 package com.bridgelabz.fundooappbackend.note.model;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,8 +40,8 @@ public class Label implements Serializable
 	private User user;
 
 	@ManyToMany
-	@JoinTable(name = "notedLabeled", joinColumns = @JoinColumn(name = "labelId"))
-	List<Note> notes;
+	@JoinTable(name = "notedLabeled", joinColumns = @JoinColumn(referencedColumnName  = "id"))
+	private List<Note> notes = new ArrayList<Note>();
 	
 	public int getId() {
 		return id;

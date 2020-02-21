@@ -1,5 +1,6 @@
 package com.bridgelabz.fundooappbackend.note.model;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -44,8 +45,8 @@ public class Note implements Serializable {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToMany(mappedBy = "notes")
-	List<Label> labels;
+	@ManyToMany
+	private List<Label> labels = new ArrayList<Label>();
 	
 	@Temporal(TemporalType.TIMESTAMP)
  	@CreationTimestamp
@@ -60,6 +61,16 @@ public class Note implements Serializable {
 	private boolean archieve;
 
 	private boolean trash;
+	
+	private Date reminder;
+
+	public Date getReminder() {
+		return reminder;
+	}
+
+	public void setReminder(Date reminder) {
+		this.reminder = reminder;
+	}
 
 	public int getId() {
 		return id;
@@ -142,7 +153,7 @@ public class Note implements Serializable {
 	}
 
 	public Note(int id, @NotNull String title, @NotNull String description, User user, List<Label> labels,
-			Date noteRegistrationDate, Date noteUpdatedDate, boolean pin, boolean archieve, boolean trash) {
+			Date noteRegistrationDate, Date noteUpdatedDate, boolean pin, boolean archieve, boolean trash, Date reminder) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -154,6 +165,7 @@ public class Note implements Serializable {
 		this.pin = pin;
 		this.archieve = archieve;
 		this.trash = trash;
+		this.reminder=reminder;
 	}
 
 	public Note() {
@@ -165,9 +177,8 @@ public class Note implements Serializable {
 	public String toString() {
 		return "Note [id=" + id + ", title=" + title + ", description=" + description + ", user=" + user + ", labels="
 				+ labels + ", noteRegistrationDate=" + noteRegistrationDate + ", noteUpdatedDate=" + noteUpdatedDate
-				+ ", pin=" + pin + ", archieve=" + archieve + ", trash=" + trash + "]";
+				+ ", pin=" + pin + ", archieve=" + archieve + ", trash=" + trash + ", reminder=" + reminder + "]";
 	}
 
-	
 	
 }

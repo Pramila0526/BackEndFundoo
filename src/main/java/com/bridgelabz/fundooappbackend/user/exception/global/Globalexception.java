@@ -35,6 +35,7 @@ public class Globalexception
 	@ExceptionHandler(RegistrationExcepton.class)
 	public ResponseEntity<Response> registrationExcepton(Exception e) 
 	{
+		System.out.println("meassge" +e.getMessage() );
 		return new ResponseEntity<Response>(new Response(Messages.BAD_REQUEST, e.getMessage(), "Please Try Again"), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

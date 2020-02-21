@@ -12,7 +12,7 @@ public class Messages {
 	public static final String EMAIL_ALREADY_REGISTERED = "Email Id is Already Registered, Please try with other Email";
 	
 	public static final String REGISTRATION_MAIL_TEXT = "\t Validate your email \n"
-														+ "http://localhost:8080/validate?token=";
+														+ "http://localhost:3000/login?token=";
 	
 	public static final String INVALID_EMAIL = "Invalid Username Or Empty Field*";
 	
@@ -44,12 +44,13 @@ public class Messages {
 	
 	public static final String INVALID_TOKEN = "Invalid Token**";
 	
-	public static final String VERIFY_MAIL= "Email Verified";
+	public static final String VERIFY_MAIL= "\t Validate your email \n"
+			+ "http://localhost:3000/resetpassword?token=";
 	
 	// Status Code
 	public static final int OK = 200;
 	
-	public static final int BAD_REQUEST = 400;
+	public static final int BAD_REQUEST = 500;
 	
 	public static final int NOT_FOUND = 404;
 	

@@ -30,10 +30,10 @@ public class User implements Serializable
 	private int id;
 	
 	@NotNull
-	private String firstname;
+	private String firstName;
 	
 	@NotNull
-	private String lastname;
+	private String lastName;
 	
 	@NotNull
 	@Email(regexp =  "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.(?:[A-Z]{2,}|com|org))+$")
@@ -45,7 +45,7 @@ public class User implements Serializable
 	
 	@NotNull
 	//@Pattern(regexp = "{10}")
-	private long phonenumber;
+	private long phoneNumber;
 	
 	@NotNull
 	private boolean validate;
@@ -58,16 +58,16 @@ public class User implements Serializable
 
 	}
 
-	public User(int id, @NotNull String firstname, @NotNull String lastname, @NotNull String email,
-			@NotNull String password, @NotNull long phonenumber, @NotNull boolean validate)
+	public User(int id, @NotNull String firstName, @NotNull String lastName, @NotNull String email,
+			@NotNull String password, @NotNull long phoneNumber, @NotNull boolean validate)
 	{
 		super();
 		this.id = id;
-		this.firstname = firstname;
-		this.lastname = lastname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
-		this.phonenumber = phonenumber;
+		this.phoneNumber = phoneNumber;
 		this.validate = validate;
 	}
 
@@ -81,24 +81,24 @@ public class User implements Serializable
 		this.id = id;
 	}
 
-	public String getFirstname() 
+	public String getFirstName() 
 	{
-		return firstname;
+		return firstName;
 	}
 
-	public void setFirstname(String firstname) 
+	public void setFirstName(String firstName) 
 	{
-		this.firstname = firstname;
+		this.firstName = firstName;
 	}
 
-	public String getLastname() 
+	public String getLastName() 
 	{
-		return lastname;
+		return lastName;
 	}
 
-	public void setLastname(String lastname)
+	public void setLastName(String lastName)
 	{
-		this.lastname = lastname;
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -120,14 +120,14 @@ public class User implements Serializable
 		this.password = password;
 	}
 
-	public long getPhonenumber() 
+	public long getPhoneNumber() 
 	{
-		return phonenumber;
+		return phoneNumber;
 	}
 
-	public void setPhonenumber(long phonenumber)
+	public void setPhoneNumber(long phoneNumber)
 	{
-		this.phonenumber = phonenumber;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public boolean isValidate()
@@ -142,7 +142,7 @@ public class User implements Serializable
 
 	public String toString() 
 	{
-		return "User [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
-				+ ", password=" + password + ", phonenumber=" + phonenumber + ", validate=" + validate + "]";
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", password=" + password + ", phoneNumber=" + phoneNumber + ", validate=" + validate + "]";
 	}
 }

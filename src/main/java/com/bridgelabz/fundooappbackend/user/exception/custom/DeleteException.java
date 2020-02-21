@@ -12,5 +12,4 @@ public class DeleteException  extends RuntimeException
 	{
 		super(message);
 	}
-
 }

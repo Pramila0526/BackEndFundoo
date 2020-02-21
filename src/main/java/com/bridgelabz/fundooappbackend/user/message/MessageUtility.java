@@ -15,6 +15,7 @@ public class MessageUtility
 	public static SimpleMailMessage verifyUserMail(String email,String token,String link)
 	{
 		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom("forgotbridge70@gmail.com");
 		message.setTo(email);    				 	// Sending Email
 		message.setSubject("Test");            	 
 		message.setText("Hello "+(link+token)); 	// For Sending the token to email

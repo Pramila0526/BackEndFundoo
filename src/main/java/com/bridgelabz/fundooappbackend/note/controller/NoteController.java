@@ -1,8 +1,11 @@
 package com.bridgelabz.fundooappbackend.note.controller;
+import java.util.Date;
+
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,26 +27,23 @@ import com.bridgelabz.fundooappbackend.user.response.Response;
  ***********************************************************************************************************/
 @RestController   
 @RequestMapping("/note")
+@CrossOrigin(allowedHeaders = "*" , origins = "*")
 public class NoteController 
 {
       @Autowired
       NoteService notesServiceImplementation;
 	
-      /*public NoteController(NoteService notesServiceImplementation2) {
-		// TODO Auto-generated constructor stub
-	}*/
-
-	// Testing API
+	  // Testing API
       @GetMapping("/demoo")
       public String demo()
       {
     	  return "Hello User!!";
       }
       
-      @GetMapping("/addnote")
+    @GetMapping("/addnote")
   	public Response addNote(@RequestBody Note noteDto) throws Exception 
   	{
-  		return new Response(Messages.OK,"Note Added",notesServiceImplementation.addNote(noteDto));
+  		return new Response(Messages.OK,"Note Added Successfully!!",notesServiceImplementation.addNote(noteDto));
   	}
 
     // Adding New Note
@@ -72,6 +72,13 @@ public class NoteController
 	public ResponseEntity<Response> getAllNotes(@RequestHeader String token) 
 	{
   		return new ResponseEntity<Response>(notesServiceImplementation.getAllNotes(token), HttpStatus.OK); // give response for user 200
+	}
+    
+ // Getting all Archive Notes
+    @GetMapping("/getallarchivenotes")
+	public ResponseEntity<Response> getAllArchiveNotes(@RequestHeader String token) 
+	{
+  		return new ResponseEntity<Response>(notesServiceImplementation.findAllArchiveNotes(token), HttpStatus.OK); // give response for user 200
 	}
     
     // Getting all Notes
@@ -110,7 +117,7 @@ public class NoteController
    	}
     
     // Archive the Notes
-    @PutMapping("/archieve/{id}")
+    @PutMapping("/archive/{id}")
    	public ResponseEntity<Response> archive(@Valid @PathVariable int id,@RequestHeader String token) 
    	{
      		return new ResponseEntity<Response>(notesServiceImplementation.archive(id, token), HttpStatus.OK); // give response for user 200
@@ -122,7 +129,31 @@ public class NoteController
    	{
      		return new ResponseEntity<Response>(notesServiceImplementation.trash(id, token), HttpStatus.OK); // give response for user 200
    	}
+    
+    @PostMapping("/addreminder")
+   	public ResponseEntity<Response> addReminder(@Valid int id, String token, Date date) 
+   	{
+     		return new ResponseEntity<Response>(notesServiceImplementation.addReminder(id, token, date), HttpStatus.OK); // give response for user 200
+   	}
+    
+    @PutMapping("/updatereminder")
+   	public ResponseEntity<Response> updateReminder(@Valid int id, String token, Date date) 
+   	{
+     		return new ResponseEntity<Response>(notesServiceImplementation.updateReminder(id, token, date), HttpStatus.OK); // give response for user 200
+   	}
+    
+    @DeleteMapping("/deletereminder")
+   	public ResponseEntity<Response> deleteReminder(@Valid int id, String token, Date date) 
+   	{
+     		return new ResponseEntity<Response>(notesServiceImplementation.deleteReminder(id, token), HttpStatus.OK); // give response for user 200
+   	}
 }
+
+
+
+
+
+
 
 
 

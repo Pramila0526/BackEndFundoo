@@ -1,5 +1,7 @@
 package com.bridgelabz.fundooappbackend.user.dto;
 
+import javax.validation.constraints.NotBlank;
+
 /**********************************************************************************************************
  * @author 	:Pramila Tawari 
  * Purpose	:ForgetPasswordDto uses Email for password recovery
@@ -8,7 +10,9 @@ package com.bridgelabz.fundooappbackend.user.dto;
 
 public class ForgotPasswordDto 
 {
+	@NotBlank
 	private String email;
+	
 	
 	public ForgotPasswordDto() 
 	{

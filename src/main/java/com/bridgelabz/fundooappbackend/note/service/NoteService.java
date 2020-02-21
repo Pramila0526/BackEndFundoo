@@ -1,4 +1,5 @@
 package com.bridgelabz.fundooappbackend.note.service;
+import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,8 @@ import com.bridgelabz.fundooappbackend.user.response.Response;
 @Service
 public interface NoteService {
 	public Response addNewNote(NoteDto noteDto,String token) throws Exception;
-	public Response addNote(Note noteDto) throws Exception;
 	public Response updateNote(@Valid int id,NoteDto updateNoteDto, String token)throws Exception; 
 	public Response deleteNote(int id, String token) throws Exception; 
-//	public Response findNote(int id,String token);
-//	public List<Note> showUserNotes(int id,String token);
 	public Response getAllNotes(@RequestHeader String token);
 	public List<Note> sortByDescription(String token);
 	public Response findNote(int id, String token);
@@ -28,5 +26,11 @@ public interface NoteService {
 	public Response pinAndUnpin(@Valid int id,String token);
 	public Response archive(@Valid int id,String token);
 	public Response trash(@Valid int id,String token);
-
+	Response addReminder(@Valid int id, String token, Date date);
+	Response updateReminder(@Valid int id, String token, Date date);
+	Response deleteReminder(@Valid int id, String token);
+	public Response addNote(Note noteDto) throws Exception;
+	public Response findAllArchiveNotes(String token);
+//	public Response findNote(int id,String token);
+//	public List<Note> showUserNotes(int id,String token);
 }

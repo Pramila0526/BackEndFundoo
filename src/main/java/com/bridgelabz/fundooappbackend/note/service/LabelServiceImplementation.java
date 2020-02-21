@@ -54,7 +54,7 @@ public class LabelServiceImplementation implements LabelService {
 			throw new InputNotFoundException(Messages.INPUT_NOT_FOUND);
 		}
 		
-		Label label = mapper.map(labelDto, Label.class); // Mapping new User data into the user Class
+		Label label = mapper.map(labelDto, Label.class); // Mapping new Label data into the Label Model
 		
 		String userEmail = tokenUtility.getUserToken(token); 
 		
