@@ -146,10 +146,29 @@ public class NoteServiceImplementation implements NoteService {
 		}
 
 		// note.setUser(user);
-
-		notesRepository.delete(note);
-
-		elasticService.deleteNote(id);
+		if (note.isTrash()){
+			notesRepository.delete(note);
+        }
+		else
+		{
+			note.setTrash(true);
+			notesRepository.save(note);
+			return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
+					environment.getProperty("status.success.trash"), environment.getProperty("success.status"));
+		}
+		
+		
+		//		
+		if (note.isTrash()){
+			elasticService.deleteNote(id);
+        }
+		else
+		{
+			note.setTrash(true);
+			notesRepository.save(note);
+			return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
+					environment.getProperty("status.success.trash"), environment.getProperty("success.status"));
+		}
 
 		return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
 				environment.getProperty("status.success.notedeleted"), environment.getProperty("success.status"));
@@ -162,25 +181,27 @@ public class NoteServiceImplementation implements NoteService {
 	public Response getAllNotes(String token) {
 
 		String usertoken = tokenUtility.getUserToken(token);
+		List<Note> allNotes = notesRepository.findAll();
 
 		if (usertoken.isEmpty()) {
 			throw new TokenException(Messages.INVALID_TOKEN);
 		}
 
-		User user = repository.findByEmail(usertoken);
-		
-		if (user == null) {
+		User userEmail = repository.findByEmail(usertoken);
+
+		if (userEmail == null) {
 			throw new UserNotFoundException(Messages.USER_NOT_EXISTING);
 		}
 
-         // Note note= (Note) notesRepository.findAll();
-		 // System.out.println(note);
-		 // return note;
-		
-		List<Note> note = notesRepository.findAll().stream().filter(note1 ->note1.isArchieve()==false).collect(Collectors.toList());
-		
+		//vdksvkl
+		List<Note> note = allNotes.stream().filter(note1 -> note1.isArchieve() == false && note1.isTrash()==false).collect(Collectors.toList());
+		System.out.println("Archive Notes----------" + note);
+		List<Note> allNotesOfUser = note.stream()
+				.filter(userNotes -> userNotes.getUser().getEmail().equals(userEmail.getEmail()))
+				.collect(Collectors.toList());
+		System.out.println("User Notes----------" + allNotesOfUser);
 		return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
-				environment.getProperty("status.success.allnotes"), note);
+				environment.getProperty("status.success.allnotes"), allNotesOfUser);
 
 	}
 
@@ -216,6 +237,30 @@ public class NoteServiceImplementation implements NoteService {
  *
  *************************************************************************************************/
 	public List<Note> sortByTitle(String token) {
+
+		String usertoken = tokenUtility.getUserToken(token);
+
+		System.out.println(usertoken);
+
+		if (usertoken.isEmpty()) {
+			throw new TokenException(Messages.INVALID_TOKEN);
+		}
+		User user = repository.findByEmail(usertoken);
+
+		if (user == null) {
+			throw new UserNotFoundException(Messages.USER_NOT_EXISTING);
+		}
+
+		List<Note> list = notesRepository.findAll().stream().filter(e -> e.getUser().getId() == user.getId())
+				.collect(Collectors.toList());
+
+		list = list.stream().sorted((list1, list2) -> list1.getTitle().compareTo(list2.getTitle()))
+				.collect(Collectors.toList());
+		return list;
+	}
+	
+	
+	public List<Note> practice(String token) {
 
 		String usertoken = tokenUtility.getUserToken(token);
 
@@ -485,35 +530,57 @@ public class NoteServiceImplementation implements NoteService {
 	// Archive Notes
 	public Response findAllArchiveNotes(String token) {
 
-		String usertoken = tokenUtility.getUserToken(token);
-
+       String usertoken = tokenUtility.getUserToken(token);
+       
+       List<Note> allNotes = notesRepository.findAll();
+       
 		if (usertoken.isEmpty()) {
 			throw new TokenException(Messages.INVALID_TOKEN);
 		}
 
-		User user = repository.findByEmail(usertoken);
+		User userEmail = repository.findByEmail(usertoken);
 		
-		if (user == null) {
+		if (userEmail == null) {
 			throw new UserNotFoundException(Messages.USER_NOT_EXISTING);
 		}
 
-         // Note note= (Note) notesRepository.findAll();
-		 // System.out.println(note);
-		 // return note;
-		
-		List<Note> note = notesRepository.findAll().stream().filter(note1 ->note1.isArchieve()).collect(Collectors.toList());
-		
-		return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
-				environment.getProperty("status.success.allnotes"), note);
+         List<Note> note = allNotes.stream().filter(note1 ->note1.isArchieve()).collect(Collectors.toList());
+		System.out.println("Archive Notes----------"+note);
+         
+		List<Note> allNotesOfUser = note.stream().filter( userNotes -> userNotes.getUser().getEmail().equals(userEmail.getEmail())).collect(Collectors.toList());
+		 System.out.println("User Notes----------"+allNotesOfUser);
+         return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
+				environment.getProperty("status.success.allnotes"), allNotesOfUser);
 
 	}
 	
 	
-	
-	
-	
-	
-	
+	public Response findAllTrashNotes(String token) {
+
+	       String usertoken = tokenUtility.getUserToken(token);
+	       
+	       List<Note> allNotes = notesRepository.findAll();
+	       
+			if (usertoken.isEmpty()) {
+				throw new TokenException(Messages.INVALID_TOKEN);
+			}
+
+			User userEmail = repository.findByEmail(usertoken);
+			
+			if (userEmail == null) {
+				throw new UserNotFoundException(Messages.USER_NOT_EXISTING);
+			}
+
+	         List<Note> note = allNotes.stream().filter(note1 ->note1.isTrash()).collect(Collectors.toList());
+			System.out.println("Archive Notes----------"+note);
+	         
+			List<Note> allNotesOfUser = note.stream().filter( userNotes -> userNotes.getUser().getEmail().equals(userEmail.getEmail())).collect(Collectors.toList());
+			 System.out.println("User Notes----------"+allNotesOfUser);
+	         return new Response(Integer.parseInt(environment.getProperty("status.ok.code")),
+					environment.getProperty("status.success.allnotes"), allNotesOfUser);
+
+		}
+		
 	
 	
  	

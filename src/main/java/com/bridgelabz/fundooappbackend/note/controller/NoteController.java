@@ -61,7 +61,7 @@ public class NoteController
   	}
     
     // Delete a Note
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletenote/{id}")
   	public ResponseEntity<Response> deleteNote(@PathVariable int id,@RequestHeader String token) throws Exception
   	{
   		return new ResponseEntity<Response>(notesServiceImplementation.deleteNote(id, token), HttpStatus.OK); // give response for user 200
@@ -79,6 +79,13 @@ public class NoteController
 	public ResponseEntity<Response> getAllArchiveNotes(@RequestHeader String token) 
 	{
   		return new ResponseEntity<Response>(notesServiceImplementation.findAllArchiveNotes(token), HttpStatus.OK); // give response for user 200
+	}
+    
+ // Getting all Trah Notes
+    @GetMapping("/getalltrashnotes")
+	public ResponseEntity<Response> getAllTrahNotes(@RequestHeader String token) 
+	{
+  		return new ResponseEntity<Response>(notesServiceImplementation.findAllTrashNotes(token), HttpStatus.OK); // give response for user 200
 	}
     
     // Getting all Notes

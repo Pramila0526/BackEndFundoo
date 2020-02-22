@@ -31,6 +31,7 @@ public interface NoteService {
 	Response deleteReminder(@Valid int id, String token);
 	public Response addNote(Note noteDto) throws Exception;
 	public Response findAllArchiveNotes(String token);
+	public Response findAllTrashNotes(String token);
 //	public Response findNote(int id,String token);
 //	public List<Note> showUserNotes(int id,String token);
 }
